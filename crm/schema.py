@@ -98,11 +98,12 @@ class CreateCustomer(graphene.Mutation):
             if not is_valid:
                 raise Exception(error_msg)
 
-        customer = Customer.objects.create(
+        customer = Customer(
             name=input.name,
             email=input.email,
             phone=input.phone or ""
         )
+        customer.save()
 
         return CreateCustomerResponse(
             customer=customer,
@@ -135,11 +136,12 @@ class BulkCreateCustomers(graphene.Mutation):
                         errors.append(f"Row {idx + 1}: {error_msg}")
                         continue
 
-                customer = Customer.objects.create(
+                customer = Customer(
                     name=customer_data.name,
                     email=customer_data.email,
                     phone=customer_data.phone or ""
                 )
+                customer.save()
                 customers.append(customer)
             except Exception as e:
                 errors.append(f"Row {idx + 1}: {str(e)}")
@@ -166,11 +168,12 @@ class CreateProduct(graphene.Mutation):
         if stock < 0:
             raise Exception("Stock cannot be negative")
 
-        product = Product.objects.create(
+        product = Product(
             name=input.name,
             price=input.price,
             stock=stock
         )
+        product.save()
 
         return CreateProductResponse(product=product)
 
@@ -205,10 +208,11 @@ class CreateOrder(graphene.Mutation):
         total_amount = sum(product.price for product in products)
 
         # Create order
-        order = Order.objects.create(
+        order = Order(
             customer=customer,
             total_amount=total_amount
         )
+        order.save()
         order.products.set(products)
 
         return CreateOrderResponse(order=order)
