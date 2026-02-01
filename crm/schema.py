@@ -1,9 +1,11 @@
 import graphene
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType, DjangoFilterConnectionField
+from graphene import relay
 from django.db import transaction
 from decimal import Decimal
 import re
 from .models import Customer, Product, Order
+from .filters import CustomerFilter, ProductFilter, OrderFilter
 
 
 # GraphQL Types
@@ -11,18 +13,21 @@ class CustomerType(DjangoObjectType):
     class Meta:
         model = Customer
         fields = ('id', 'name', 'email', 'phone', 'created_at', 'updated_at')
+        interfaces = (relay.Node,)
 
 
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
         fields = ('id', 'name', 'price', 'stock', 'created_at', 'updated_at')
+        interfaces = (relay.Node,)
 
 
 class OrderType(DjangoObjectType):
     class Meta:
         model = Order
         fields = ('id', 'customer', 'products', 'total_amount', 'order_date', 'created_at', 'updated_at')
+        interfaces = (relay.Node,)
 
 
 # Input Types
@@ -220,12 +225,30 @@ class CreateOrder(graphene.Mutation):
 
 # Query class (if needed for queries)
 class Query(graphene.ObjectType):
+    # Simple queries (kept for backward compatibility)
     customers = graphene.List(CustomerType)
     customer = graphene.Field(CustomerType, id=graphene.ID())
     products = graphene.List(ProductType)
     product = graphene.Field(ProductType, id=graphene.ID())
     orders = graphene.List(OrderType)
     order = graphene.Field(OrderType, id=graphene.ID())
+
+    # Filtered connection queries
+    all_customers = DjangoFilterConnectionField(
+        CustomerType,
+        filterset_class=CustomerFilter,
+        order_by=graphene.List(of_type=graphene.String)
+    )
+    all_products = DjangoFilterConnectionField(
+        ProductType,
+        filterset_class=ProductFilter,
+        order_by=graphene.List(of_type=graphene.String)
+    )
+    all_orders = DjangoFilterConnectionField(
+        OrderType,
+        filterset_class=OrderFilter,
+        order_by=graphene.List(of_type=graphene.String)
+    )
 
     def resolve_customers(self, info):
         return Customer.objects.all()
@@ -253,6 +276,27 @@ class Query(graphene.ObjectType):
             return Order.objects.get(pk=id)
         except Order.DoesNotExist:
             return None
+
+    def resolve_all_customers(self, info, **kwargs):
+        queryset = Customer.objects.all()
+        order_by = kwargs.get('order_by')
+        if order_by:
+            queryset = queryset.order_by(*order_by)
+        return queryset
+
+    def resolve_all_products(self, info, **kwargs):
+        queryset = Product.objects.all()
+        order_by = kwargs.get('order_by')
+        if order_by:
+            queryset = queryset.order_by(*order_by)
+        return queryset
+
+    def resolve_all_orders(self, info, **kwargs):
+        queryset = Order.objects.all()
+        order_by = kwargs.get('order_by')
+        if order_by:
+            queryset = queryset.order_by(*order_by)
+        return queryset
 
 
 # Mutation class
