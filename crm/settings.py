@@ -2,8 +2,9 @@
 CRM App Settings
 App-specific configurations for the CRM application
 
-Note: django_crontab is configured in the main settings.py (alx_backend_graphql_crm/settings.py)
-and must be in INSTALLED_APPS for cron jobs to work.
+Note: django_crontab and django_celery_beat are configured in the main settings.py 
+(alx_backend_graphql_crm/settings.py) and must be in INSTALLED_APPS for cron jobs 
+and Celery Beat to work.
 """
 
 # CRM Model Settings
@@ -44,6 +45,7 @@ GRAPHQL_SETTINGS = {
 # 
 # Celery Beat Schedule
 # Note: CELERY_BEAT_SCHEDULE is configured in alx_backend_graphql_crm/settings.py
+# django_celery_beat must be in INSTALLED_APPS for Celery Beat to work
 # The scheduled task is:
 # - generate_crm_report: Runs every Monday at 6:00 AM
 CRON_SETTINGS = {
