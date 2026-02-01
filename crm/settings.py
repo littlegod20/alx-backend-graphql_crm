@@ -41,6 +41,11 @@ GRAPHQL_SETTINGS = {
 # The cron jobs are:
 # - log_crm_heartbeat: Runs every 5 minutes
 # - update_low_stock: Runs every 12 hours (0 */12 * * *)
+# 
+# Celery Beat Schedule
+# Note: CELERY_BEAT_SCHEDULE is configured in alx_backend_graphql_crm/settings.py
+# The scheduled task is:
+# - generate_crm_report: Runs every Monday at 6:00 AM
 CRON_SETTINGS = {
     'HEARTBEAT_LOG_FILE': '/tmp/crm_heartbeat_log.txt',
     'CUSTOMER_CLEANUP_LOG_FILE': '/tmp/customer_cleanup_log.txt',
