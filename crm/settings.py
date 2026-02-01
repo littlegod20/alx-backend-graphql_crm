@@ -1,6 +1,9 @@
 """
 CRM App Settings
 App-specific configurations for the CRM application
+
+Note: django_crontab is configured in the main settings.py (alx_backend_graphql_crm/settings.py)
+and must be in INSTALLED_APPS for cron jobs to work.
 """
 
 # CRM Model Settings
@@ -40,6 +43,7 @@ CRON_SETTINGS = {
     'ORDER_REMINDERS_LOG_FILE': '/tmp/order_reminders_log.txt',
     'INACTIVE_CUSTOMER_DAYS': 365,  # Days before considering customer inactive
     'ORDER_REMINDER_DAYS': 7,  # Days to look back for order reminders
+    'DJANGO_CRONTAB_ENABLED': True,  # Flag to indicate django_crontab is configured
 }
 
 # Validation Settings
