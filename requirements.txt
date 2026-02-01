@@ -2,3 +2,4 @@ django
 graphene-django
 django-filter
 gql[all]
+django-crontab
