@@ -37,12 +37,19 @@ GRAPHQL_SETTINGS = {
 }
 
 # Cron Job Settings
+# Note: CRONJOBS configuration is in alx_backend_graphql_crm/settings.py
+# The cron jobs are:
+# - log_crm_heartbeat: Runs every 5 minutes
+# - update_low_stock: Runs every 12 hours (0 */12 * * *)
 CRON_SETTINGS = {
     'HEARTBEAT_LOG_FILE': '/tmp/crm_heartbeat_log.txt',
     'CUSTOMER_CLEANUP_LOG_FILE': '/tmp/customer_cleanup_log.txt',
     'ORDER_REMINDERS_LOG_FILE': '/tmp/order_reminders_log.txt',
+    'LOW_STOCK_UPDATES_LOG_FILE': '/tmp/low_stock_updates_log.txt',
     'INACTIVE_CUSTOMER_DAYS': 365,  # Days before considering customer inactive
     'ORDER_REMINDER_DAYS': 7,  # Days to look back for order reminders
+    'LOW_STOCK_THRESHOLD': 10,  # Stock level threshold for low stock alerts
+    'STOCK_INCREMENT': 10,  # Amount to increment stock when restocking
     'DJANGO_CRONTAB_ENABLED': True,  # Flag to indicate django_crontab is configured
 }
 
