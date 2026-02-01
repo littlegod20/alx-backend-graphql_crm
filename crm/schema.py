@@ -4,6 +4,7 @@ from graphene import relay
 from django.db import transaction
 from decimal import Decimal
 import re
+from crm.models import Product
 from .models import Customer, Product, Order
 from .filters import CustomerFilter, ProductFilter, OrderFilter
 
